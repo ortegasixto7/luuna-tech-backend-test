@@ -38,6 +38,7 @@ export class MongoDbAdminPersistence implements IAdminPersistence {
     const result: Admin[] = [];
     const resultData = await this.collection.find().toArray();
     resultData.map((item) => {
+      delete (item as any)._id;
       result.push(item as any as Admin);
     });
     return result;
