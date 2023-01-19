@@ -24,6 +24,7 @@ export class CreateUseCase implements IUseCaseCommand<CreateRequest> {
 
     const admin = new Admin();
     admin.id = auth.id;
+    admin.name = request.name;
     admin.email = auth.email;
 
     await Promise.all([this.authService.create(auth), this.adminPersistence.create(admin)]);
