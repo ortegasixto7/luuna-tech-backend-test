@@ -8,6 +8,8 @@ import { CreateRequest } from '../core/admin/useCases/create/CreateRequest';
 import { CreateUseCase } from '../core/admin/useCases/create/CreateUseCase';
 import { UpdateRequest } from '../core/admin/useCases/update/UpdateRequest';
 import { UpdateUseCase } from '../core/admin/useCases/update/UpdateUseCase';
+import { DeleteRequest } from '../core/admin/useCases/delete/DeleteRequest';
+import { DeleteUseCase } from '../core/admin/useCases/delete/DeleteUseCase';
 import { DependencyInjector } from '../external/dependencyInjector/DependencyInjector';
 
 const router = Router();
@@ -15,6 +17,14 @@ const router = Router();
 const dependencyInjector = new DependencyInjector();
 const adminPersistence = dependencyInjector.getAdminPersistence();
 const authService = dependencyInjector.getAuthService();
+
+router.delete('/:id/v1', async (req: Request, res: Response) => {
+  await RequestService.wrapper(async () => {
+    req.body.userId = authService.validateTokenOrException(req.headers.authorization);
+    req.body.id = req.params.id;
+    await new DeleteUseCase(adminPersistence, authService).execute(new DeleteRequest(req.body));
+  }, res);
+});
 
 router.put('/:id/v1', async (req: Request, res: Response) => {
   await RequestService.wrapper(async () => {

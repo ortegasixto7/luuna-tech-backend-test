@@ -13,6 +13,10 @@ export class AuthService implements IAuthService {
     this.collection = database.collection('auth');
   }
 
+  async delete(id: string): Promise<void> {
+    await this.collection.deleteOne({ id });
+  }
+
   async getByIdOrException(id: string): Promise<Auth> {
     const result = await this.collection.findOne({ id });
     if (!result) throw new NotFoundException(ExceptionCodeEnum.USER_NOT_FOUND);

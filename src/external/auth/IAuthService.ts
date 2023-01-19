@@ -2,6 +2,7 @@ import { Auth } from './Auth';
 
 export interface IAuthService extends IAuthCreateService, IAuthGenerateTokenService, IAuthValidateTokenService {
   update(data: Auth): Promise<void>;
+  delete(id: string): Promise<void>;
   getByEmailOrNull(email: string): Promise<Auth | null>;
   getByIdOrException(id: string): Promise<Auth>;
 }
