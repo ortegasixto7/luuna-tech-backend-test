@@ -5,6 +5,7 @@ import * as jwt from 'jsonwebtoken';
 import { JWT_SECRET, JWT_EXPIRATION } from '../../config/config';
 import { BadRequestException } from '../exception/BadRequestException';
 import { ExceptionCodeEnum } from '../exception/ExceptionCodeEnum';
+import { NotFoundException } from '../exception/NotFoundException';
 
 export class AuthService implements IAuthService {
   private collection: Collection;
@@ -12,8 +13,14 @@ export class AuthService implements IAuthService {
     this.collection = database.collection('auth');
   }
 
+  async getByIdOrException(id: string): Promise<Auth> {
+    const result = await this.collection.findOne({ id });
+    if (!result) throw new NotFoundException(ExceptionCodeEnum.USER_NOT_FOUND);
+    return result as any as Auth;
+  }
+
   async update(data: Auth): Promise<void> {
-    await this.collection.updateOne({ id: data.id }, data);
+    await this.collection.updateOne({ id: data.id }, { $set: data });
   }
 
   async getByEmailOrNull(email: string): Promise<Auth | null> {

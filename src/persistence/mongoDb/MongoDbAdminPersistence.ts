@@ -1,6 +1,8 @@
 import { IAdminPersistence } from '../../core/admin/IAdminPersistence';
 import { Collection, Db } from 'mongodb';
 import { Admin } from '../../core/admin/Admin';
+import { NotFoundException } from '../../external/exception/NotFoundException';
+import { ExceptionCodeEnum } from '../../external/exception/ExceptionCodeEnum';
 
 export class MongoDbAdminPersistence implements IAdminPersistence {
   private collection: Collection;
@@ -8,12 +10,18 @@ export class MongoDbAdminPersistence implements IAdminPersistence {
     this.collection = database.collection('admins');
   }
 
+  async getByIdOrException(id: string): Promise<Admin> {
+    const result = await this.collection.findOne({ id });
+    if (!result) throw new NotFoundException(ExceptionCodeEnum.USER_NOT_FOUND);
+    return result as any as Admin;
+  }
+
   async create(data: Admin): Promise<void> {
     await this.collection.insertOne(data);
   }
 
   async update(data: Admin): Promise<void> {
-    await this.collection.updateOne({ id: data.id }, data);
+    await this.collection.updateOne({ id: data.id }, { $set: data });
   }
 
   async delete(id: string): Promise<void> {

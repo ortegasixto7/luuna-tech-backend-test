@@ -5,5 +5,6 @@ export interface IAdminPersistence {
   update(data: Admin): Promise<void>;
   delete(id: string): Promise<void>;
   getByEmailOrNull(email: string): Promise<null | Admin>;
+  getByIdOrException(id: string): Promise<Admin>;
   getAll(): Promise<Admin[]>;
 }
