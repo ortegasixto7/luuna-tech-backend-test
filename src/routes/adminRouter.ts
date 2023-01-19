@@ -4,6 +4,8 @@ import { SignUpRequest } from '../core/admin/useCases/signUp/SignUpRequest';
 import { SignUpUseCase } from '../core/admin/useCases/signUp/SignUpUseCase';
 import { SignInRequest } from '../core/admin/useCases/signIn/SignInRequest';
 import { SignInUseCase } from '../core/admin/useCases/signIn/SignInUseCase';
+import { CreateRequest } from '../core/admin/useCases/create/CreateRequest';
+import { CreateUseCase } from '../core/admin/useCases/create/CreateUseCase';
 import { DependencyInjector } from '../external/dependencyInjector/DependencyInjector';
 
 const router = Router();
@@ -11,6 +13,13 @@ const router = Router();
 const dependencyInjector = new DependencyInjector();
 const adminPersistence = dependencyInjector.getAdminPersistence();
 const authService = dependencyInjector.getAuthService();
+
+router.post('/v1', async (req: Request, res: Response) => {
+  await RequestService.wrapper(async () => {
+    req.body.userId = authService.validateTokenOrException(req.headers.authorization);
+    await new CreateUseCase(adminPersistence, authService).execute(new CreateRequest(req.body));
+  }, res);
+});
 
 router.post('/sign-in/v1', async (req: Request, res: Response) => {
   await RequestService.wrapper(async () => {

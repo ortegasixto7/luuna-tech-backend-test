@@ -33,7 +33,7 @@ export class AuthService implements IAuthService {
   validateTokenOrException(token: string | undefined): string {
     if (!token) throw new BadRequestException(ExceptionCodeEnum.INVALID_AUTH_TOKEN);
     try {
-      const tokenResult = jwt.verify(token, JWT_SECRET);
+      const tokenResult = jwt.verify(token?.replace('Bearer ', ''), JWT_SECRET);
       console.log('USER_ID', (tokenResult as any).userId);
       return (tokenResult as any).userId;
     } catch (error) {
