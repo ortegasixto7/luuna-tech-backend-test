@@ -1,15 +1,17 @@
+import * as dotenv from 'dotenv';
 import compression from 'compression';
 import cors from 'cors';
 import express, { Response, Router } from 'express';
 import morgan from 'morgan';
 import { PORT } from './config/config';
 import { MongoDbClient } from './persistence/mongoDb/MongoDbClient';
-import * as dotenv from 'dotenv';
 dotenv.config();
 
 MongoDbClient.initDb()
   .then(async () => {
     const { adminRouter } = await import('./routes/adminRouter');
+    const { productRouter } = await import('./routes/productRouter');
+
     const app = express();
     app.use(morgan('dev'));
     app.use(express.json({ limit: '1mb' }));
@@ -28,6 +30,7 @@ MongoDbClient.initDb()
     });
 
     router.use('/api/admins', adminRouter);
+    router.use('/api/products', productRouter);
     app.use(router);
 
     app.listen(PORT, () => {
