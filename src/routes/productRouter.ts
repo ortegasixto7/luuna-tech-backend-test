@@ -6,6 +6,7 @@ import { UpdateRequest } from '../core/product/useCases/update/UpdateRequest';
 import { UpdateUseCase } from '../core/product/useCases/update/UpdateUseCase';
 import { DeleteRequest } from '../core/product/useCases/delete/DeleteRequest';
 import { DeleteUseCase } from '../core/product/useCases/delete/DeleteUseCase';
+import { GetAllUseCase } from '../core/product/useCases/getAll/GetAllUseCase';
 import { DependencyInjector } from '../external/dependencyInjector/DependencyInjector';
 
 const router = Router();
@@ -15,6 +16,12 @@ const adminPersistence = dependencyInjector.getAdminPersistence();
 const productPersistence = dependencyInjector.getProductPersistence();
 
 const authService = dependencyInjector.getAuthService();
+
+router.get('/v1', async (_: Request, res: Response) => {
+  await RequestService.wrapper(async () => {
+    return await new GetAllUseCase(productPersistence).execute();
+  }, res);
+});
 
 router.delete('/:id/v1', async (req: Request, res: Response) => {
   await RequestService.wrapper(async () => {

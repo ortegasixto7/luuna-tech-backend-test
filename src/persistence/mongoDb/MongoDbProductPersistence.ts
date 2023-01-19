@@ -38,6 +38,7 @@ export class MongoDbProductPersistence implements IProductPersistence {
     const result: Product[] = [];
     const resultData = await this.collection.find().toArray();
     resultData.map((item) => {
+      delete (item as any)._id;
       result.push(item as any as Product);
     });
     return result;
