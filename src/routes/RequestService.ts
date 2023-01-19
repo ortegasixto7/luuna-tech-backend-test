@@ -20,7 +20,7 @@ export class RequestService {
   static async wrapper(callbackFunction: Function, res: Response): Promise<any> {
     try {
       const response = await callbackFunction();
-      res.status(200).json(response ? { data: response } : undefined);
+      res.status(200).json(response ? response : undefined);
     } catch (error) {
       if (error instanceof BadRequestException) {
         console.warn(`BAD_REQUEST ${error.message}`);
