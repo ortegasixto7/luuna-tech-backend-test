@@ -6,6 +6,8 @@ import { UpdateRequest } from '../core/product/useCases/update/UpdateRequest';
 import { UpdateUseCase } from '../core/product/useCases/update/UpdateUseCase';
 import { DeleteRequest } from '../core/product/useCases/delete/DeleteRequest';
 import { DeleteUseCase } from '../core/product/useCases/delete/DeleteUseCase';
+import { GetRequest } from '../core/product/useCases/get/GetRequest';
+import { GetUseCase } from '../core/product/useCases/get/GetUseCase';
 import { GetAllUseCase } from '../core/product/useCases/getAll/GetAllUseCase';
 import { DependencyInjector } from '../external/dependencyInjector/DependencyInjector';
 
@@ -14,13 +16,22 @@ const router = Router();
 const dependencyInjector = new DependencyInjector();
 const adminPersistence = dependencyInjector.getAdminPersistence();
 const productPersistence = dependencyInjector.getProductPersistence();
+const productReportPersistence = dependencyInjector.getProductReportPersistence();
 
 const authService = dependencyInjector.getAuthService();
 const emailService = dependencyInjector.getEmailService();
 
-router.get('/v1', async (_: Request, res: Response) => {
+router.get('/:id/v1', async (req: Request, res: Response) => {
   await RequestService.wrapper(async () => {
-    return await new GetAllUseCase(productPersistence).execute();
+    req.body.id = req.params.id;
+    req.body.ipAddress = req.socket.remoteAddress;
+    return await new GetUseCase(productPersistence, productReportPersistence).execute(new GetRequest(req.body));
+  }, res);
+});
+
+router.get('/v1', async (req: Request, res: Response) => {
+  await RequestService.wrapper(async () => {
+    return await new GetAllUseCase(productPersistence, productReportPersistence).execute(req.socket.remoteAddress ?? '0.0.0.0');
   }, res);
 });
 

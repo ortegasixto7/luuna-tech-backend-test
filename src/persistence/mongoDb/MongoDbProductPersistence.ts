@@ -25,6 +25,7 @@ export class MongoDbProductPersistence implements IProductPersistence {
   async getByIdOrException(id: string): Promise<Product> {
     const result = await this.collection.findOne({ id });
     if (!result) throw new NotFoundException(ExceptionCodeEnum.PRODUCT_NOT_FOUND);
+    delete (result as any)._id;
     return result as any as Product;
   }
 
