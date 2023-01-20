@@ -1,0 +1,8 @@
+node_modules
+npm-debug.log
+dist
+README.md
+.eslintignore
+.eslintrc.js
+tsconfig.dev.json
+.gitignore
