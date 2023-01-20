@@ -12,16 +12,18 @@ export class UpdateUseCase implements IUseCaseCommand<UpdateRequest> {
 
   async execute(request: UpdateRequest): Promise<void> {
     new UpdateRequestValidation().validate(request);
-    await this.adminPersistence.getByIdOrException(request.userId);
-    const product = await this.productPersistence.getByIdOrException(request.id);
-    const productSku = await this.productPersistence.getBySkuOrNull(request.sku);
-    if (productSku) throw new BadRequestException(ExceptionCodeEnum.UNAVAILABLE_SKU);
-    if (request.brand) product.brand = request.brand;
-    if (request.name) product.name = request.name;
-    if (request.price) product.price = request.price;
-    if (request.sku) product.sku = request.sku;
-    await this.productPersistence.update(product);
     const adminLoggedIn = await this.adminPersistence.getByIdOrException(request.userId);
+    const product = await this.productPersistence.getByIdOrException(request.id);
+    if (request.sku !== product.sku) {
+      product.sku = request.sku;
+      const productSku = await this.productPersistence.getBySkuOrNull(request.sku);
+      if (productSku) throw new BadRequestException(ExceptionCodeEnum.UNAVAILABLE_SKU);
+    }
+    product.brand = request.brand;
+    product.name = request.name;
+    product.price = request.price;
+
+    await this.productPersistence.update(product);
     let admins = await this.adminPersistence.getAll();
     admins = admins.filter((item) => item.id !== adminLoggedIn.id);
     const promises: Promise<void>[] = [];

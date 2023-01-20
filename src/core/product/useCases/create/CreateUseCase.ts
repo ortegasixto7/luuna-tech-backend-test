@@ -14,7 +14,7 @@ export class CreateUseCase implements IUseCaseCommand<CreateRequest> {
 
   async execute(request: CreateRequest): Promise<void> {
     new CreateRequestValidation().validate(request);
-    await this.adminPersistence.getByIdOrException(request.userId);
+    const adminLoggedIn = await this.adminPersistence.getByIdOrException(request.userId);
     let product = await this.productPersistence.getBySkuOrNull(request.sku);
     if (product) throw new BadRequestException(ExceptionCodeEnum.UNAVAILABLE_SKU);
     product = new Product();
@@ -24,7 +24,6 @@ export class CreateUseCase implements IUseCaseCommand<CreateRequest> {
     product.price = request.price;
     product.sku = request.sku;
     await this.productPersistence.create(product);
-    const adminLoggedIn = await this.adminPersistence.getByIdOrException(request.userId);
     let admins = await this.adminPersistence.getAll();
     admins = admins.filter((item) => item.id !== adminLoggedIn.id);
     const promises: Promise<void>[] = [];
