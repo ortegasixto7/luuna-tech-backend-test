@@ -3,7 +3,7 @@ import { MongoDbAdminPersistence } from '../../persistence/mongoDb/MongoDbAdminP
 import { MongoDbProductPersistence } from '../../persistence/mongoDb/MongoDbProductPersistence';
 import { IAuthService } from '../../external/auth/IAuthService';
 import { IEmailService } from '../../external/email/IEmailService';
-import { MailtrapEmailService } from '../../external/email/MailtrapEmailService';
+import { EmailService } from '../email/EmailService';
 import { IAdminPersistence } from '../../core/admin/IAdminPersistence';
 import { IProductPersistence } from '../../core/product/IProductPersistence';
 import { MongoDbClient } from '../../persistence/mongoDb/MongoDbClient';
@@ -22,6 +22,6 @@ export class DependencyInjector {
     return new AuthService(MongoDbClient.getInstance());
   }
   getEmailService(): IEmailService {
-    return new MailtrapEmailService();
+    return new EmailService();
   }
 }

@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import { IEmailService } from './IEmailService';
-export class MailtrapEmailService implements IEmailService {
+export class EmailService implements IEmailService {
   private emailSender: nodemailer.Transporter<SMTPTransport.SentMessageInfo>;
 
   constructor() {
