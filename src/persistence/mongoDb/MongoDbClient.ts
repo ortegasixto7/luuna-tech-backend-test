@@ -1,5 +1,4 @@
 import { Db, MongoClient } from 'mongodb';
-import { DATABASE_URL } from '../../config/config';
 
 export abstract class MongoDbClient {
   private static db: Db;
@@ -9,7 +8,7 @@ export abstract class MongoDbClient {
 
   static async initDb(): Promise<void> {
     if (!this.db) {
-      const client = new MongoClient(DATABASE_URL);
+      const client = new MongoClient(process.env.DATABASE_URL!);
       try {
         await client.connect();
         this.db = client.db();

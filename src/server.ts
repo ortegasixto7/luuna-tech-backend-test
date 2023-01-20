@@ -3,7 +3,6 @@ import compression from 'compression';
 import cors from 'cors';
 import express, { Response, Router } from 'express';
 import morgan from 'morgan';
-import { PORT } from './config/config';
 import { MongoDbClient } from './persistence/mongoDb/MongoDbClient';
 dotenv.config();
 
@@ -33,8 +32,8 @@ MongoDbClient.initDb()
     router.use('/api/products', productRouter);
     app.use(router);
 
-    app.listen(PORT, () => {
-      console.log(`-------\n App listening on port => ${PORT}\n-------`);
+    app.listen(process.env.PORT, () => {
+      console.log(`-------\n App listening on port => ${process.env.PORT}\n-------`);
     });
   })
   .catch((err) => console.error(err));
