@@ -1,10 +1,12 @@
-import * as dotenv from 'dotenv';
 import compression from 'compression';
 import cors from 'cors';
 import express, { Response, Router } from 'express';
 import morgan from 'morgan';
 import { MongoDbClient } from './persistence/mongoDb/MongoDbClient';
-dotenv.config();
+
+// Uncomment in local development
+// import * as dotenv from 'dotenv';
+// dotenv.config();
 
 MongoDbClient.initDb()
   .then(async () => {
