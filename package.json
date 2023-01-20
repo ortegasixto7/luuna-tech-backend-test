@@ -5,6 +5,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint \"src/**/*\"",
     "build": "npm run lint && tsc",
+    "build-prod": "tsc",
     "watch": "tsc -w",
     "serve": "npm run lint && ts-node-dev ./src/server.ts",
     "start": "node ./dist/server.js"
