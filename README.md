@@ -5,9 +5,8 @@
 URL: https://luuna-backend-test-sixto.fly.dev
 
 - **Nota:**
-  Cabe destacar que es un servicio compartido de minimos recursos tanto la base de datos como el server de la aplicacion, un sencillo get list products sin nada de data se tomó 12seg.
-  Si lo van a testear desde internet, tengan paciencia por favor :)
-  En cambio si lo van a testear desde local, no olviden descomentar las lineas del dotenv que estan comentadas y actualizarlas tambien, recuerden que el archivo debe llamarse .env
+  Cabe destacar que es un servicio compartido de minimos recursos tanto la base de datos como el server de la aplicacion, por lo que siempre la primera request va a tardar un monton, luego las demas si serán mas rápidas.
+  Si lo van a testear desde local, no olviden descomentar las lineas del dotenv que estan comentadas y actualizarlas tambien, recuerden que el archivo debe llamarse .env
 
 - **_Como se puede mejorar o escalar esta API?_**
   Se puede mejorar en los siguientes sentidos:
