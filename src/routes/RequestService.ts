@@ -1,15 +1,14 @@
+import * as jwt from 'jsonwebtoken';
 import { BadRequestException } from '../external/exception/BadRequestException';
 import { NotFoundException } from '../external/exception/NotFoundException';
 import { Response } from 'express';
 import { ExceptionCodeEnum } from '../external/exception/ExceptionCodeEnum';
-import * as jwt from 'jsonwebtoken';
-import { JWT_SECRET } from '../config/config';
 
 export class RequestService {
   async verifyToken(token: string | undefined): Promise<string> {
     if (!token) throw new BadRequestException(ExceptionCodeEnum.INVALID_AUTH_TOKEN);
     try {
-      const tokenResult = jwt.verify(token?.replace('Bearer ', ''), JWT_SECRET);
+      const tokenResult = jwt.verify(token?.replace('Bearer ', ''), process.env.JWT_SECRET!);
       console.log('USER_ID', (tokenResult as any).userId);
       return (tokenResult as any).userId;
     } catch (error) {

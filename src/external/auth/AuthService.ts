@@ -1,8 +1,7 @@
+import * as jwt from 'jsonwebtoken';
 import { Auth } from './Auth';
 import { IAuthService } from './IAuthService';
 import { Collection, Db } from 'mongodb';
-import * as jwt from 'jsonwebtoken';
-import { JWT_SECRET, JWT_EXPIRATION } from '../../config/config';
 import { BadRequestException } from '../exception/BadRequestException';
 import { ExceptionCodeEnum } from '../exception/ExceptionCodeEnum';
 import { NotFoundException } from '../exception/NotFoundException';
@@ -38,13 +37,13 @@ export class AuthService implements IAuthService {
   }
 
   generateToken(payload: any): string {
-    return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRATION });
+    return jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: process.env.JWT_EXPIRATION });
   }
 
   validateTokenOrException(token: string | undefined): string {
     if (!token) throw new BadRequestException(ExceptionCodeEnum.INVALID_AUTH_TOKEN);
     try {
-      const tokenResult = jwt.verify(token?.replace('Bearer ', ''), JWT_SECRET);
+      const tokenResult = jwt.verify(token?.replace('Bearer ', ''), process.env.JWT_SECRET!);
       console.log('USER_ID', (tokenResult as any).userId);
       return (tokenResult as any).userId;
     } catch (error) {

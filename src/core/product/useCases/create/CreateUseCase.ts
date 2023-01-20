@@ -7,9 +7,10 @@ import { CreateRequestValidation } from './CreateRequestValidation';
 import { BadRequestException } from '../../../../external/exception/BadRequestException';
 import { ExceptionCodeEnum } from '../../../../external/exception/ExceptionCodeEnum';
 import { Product } from '../../Product';
+import { IEmailService } from '../../../../external/email/IEmailService';
 
 export class CreateUseCase implements IUseCaseCommand<CreateRequest> {
-  constructor(private productPersistence: IProductPersistence, private adminPersistence: IAdminPersistence) {}
+  constructor(private productPersistence: IProductPersistence, private adminPersistence: IAdminPersistence, private emailService: IEmailService) {}
 
   async execute(request: CreateRequest): Promise<void> {
     new CreateRequestValidation().validate(request);
@@ -23,5 +24,13 @@ export class CreateUseCase implements IUseCaseCommand<CreateRequest> {
     product.price = request.price;
     product.sku = request.sku;
     await this.productPersistence.create(product);
+    const adminLoggedIn = await this.adminPersistence.getByIdOrException(request.userId);
+    let admins = await this.adminPersistence.getAll();
+    admins = admins.filter((item) => item.id !== adminLoggedIn.id);
+    const promises: Promise<void>[] = [];
+    admins.map((item) => {
+      promises.push(this.emailService.send(item.email, `Luuna Backend Test Notification`, `${adminLoggedIn.name} has created a product`));
+    });
+    await Promise.allSettled(promises);
   }
 }

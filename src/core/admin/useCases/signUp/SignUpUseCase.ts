@@ -9,9 +9,10 @@ import * as bcrypt from 'bcrypt';
 import { Auth } from '../../../../external/auth/Auth';
 import { BadRequestException } from '../../../../external/exception/BadRequestException';
 import { ExceptionCodeEnum } from '../../../../external/exception/ExceptionCodeEnum';
+import { IEmailService } from '../../../../external/email/IEmailService';
 
 export class SignUpUseCase implements IUseCaseCommand<SignUpRequest> {
-  constructor(private adminPersistence: IAdminPersistence, private authService: IAuthService) {}
+  constructor(private adminPersistence: IAdminPersistence, private authService: IAuthService, private emailService: IEmailService) {}
 
   async execute(request: SignUpRequest): Promise<void> {
     new SignUpRequestValidation().validate(request);
@@ -28,5 +29,12 @@ export class SignUpUseCase implements IUseCaseCommand<SignUpRequest> {
     admin.email = auth.email;
 
     await Promise.all([this.authService.create(auth), this.adminPersistence.create(admin)]);
+    let admins = await this.adminPersistence.getAll();
+    admins = admins.filter((item) => item.id !== admin.id);
+    const promises: Promise<void>[] = [];
+    admins.map((item) => {
+      promises.push(this.emailService.send(item.email, `Luuna Backend Test Notification`, `${admin.name} has registered as Admin`));
+    });
+    await Promise.allSettled(promises);
   }
 }

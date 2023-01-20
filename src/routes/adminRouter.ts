@@ -18,6 +18,7 @@ const router = Router();
 const dependencyInjector = new DependencyInjector();
 const adminPersistence = dependencyInjector.getAdminPersistence();
 const authService = dependencyInjector.getAuthService();
+const emailService = dependencyInjector.getEmailService();
 
 router.get('/v1', async (req: Request, res: Response) => {
   await RequestService.wrapper(async () => {
@@ -30,7 +31,7 @@ router.delete('/:id/v1', async (req: Request, res: Response) => {
   await RequestService.wrapper(async () => {
     req.body.userId = authService.validateTokenOrException(req.headers.authorization);
     req.body.id = req.params.id;
-    await new DeleteUseCase(adminPersistence, authService).execute(new DeleteRequest(req.body));
+    await new DeleteUseCase(adminPersistence, authService, emailService).execute(new DeleteRequest(req.body));
   }, res);
 });
 
@@ -38,14 +39,14 @@ router.put('/:id/v1', async (req: Request, res: Response) => {
   await RequestService.wrapper(async () => {
     req.body.userId = authService.validateTokenOrException(req.headers.authorization);
     req.body.id = req.params.id;
-    await new UpdateUseCase(adminPersistence, authService).execute(new UpdateRequest(req.body));
+    await new UpdateUseCase(adminPersistence, authService, emailService).execute(new UpdateRequest(req.body));
   }, res);
 });
 
 router.post('/v1', async (req: Request, res: Response) => {
   await RequestService.wrapper(async () => {
     req.body.userId = authService.validateTokenOrException(req.headers.authorization);
-    await new CreateUseCase(adminPersistence, authService).execute(new CreateRequest(req.body));
+    await new CreateUseCase(adminPersistence, authService, emailService).execute(new CreateRequest(req.body));
   }, res);
 });
 
@@ -57,7 +58,7 @@ router.post('/sign-in/v1', async (req: Request, res: Response) => {
 
 router.post('/sign-up/v1', async (req: Request, res: Response) => {
   await RequestService.wrapper(async () => {
-    await new SignUpUseCase(adminPersistence, authService).execute(new SignUpRequest(req.body));
+    await new SignUpUseCase(adminPersistence, authService, emailService).execute(new SignUpRequest(req.body));
   }, res);
 });
 
