@@ -19,6 +19,7 @@ export class UpdateUseCase implements IUseCaseCommand<UpdateRequest> {
       if (newAuthEmail) throw new BadRequestException(ExceptionCodeEnum.UNAVAILABLE_EMAIL);
       auth.email = request.email.toLowerCase();
       await this.authService.update(auth);
+      admin.email = auth.email;
     }
     if (request.name || request.email) {
       await this.adminPersistence.update(admin);
