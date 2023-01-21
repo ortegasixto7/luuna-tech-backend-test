@@ -1,11 +1,11 @@
-import { CreateUseCase } from '../../../../core/admin/useCases/create/CreateUseCase';
-import { InMemoryDbAdminPersistence } from '../../../../persistence/inMemoryDb/InMemoryDbAdminPersistence';
-import { AuthServiceTest } from '../../../../external/auth/AuthServiceTest';
-import { EmailServiceTest } from '../../../../external/email/EmailServiceTest';
-import { Admin } from '../../../../core/admin/Admin';
+import { CreateUseCase } from '../../../core/admin/useCases/create/CreateUseCase';
+import { InMemoryDbAdminPersistence } from '../../../persistence/inMemoryDb/InMemoryDbAdminPersistence';
+import { AuthServiceTest } from '../../../external/auth/AuthServiceTest';
+import { EmailServiceTest } from '../../../external/email/EmailServiceTest';
+import { Admin } from '../../../core/admin/Admin';
 import { randomUUID } from 'crypto';
-import { ExceptionCodeEnum } from '../../../../external/exception/ExceptionCodeEnum';
-import { Auth } from '../../../../external/auth/Auth';
+import { ExceptionCodeEnum } from '../../../external/exception/ExceptionCodeEnum';
+import { Auth } from '../../../external/auth/Auth';
 
 describe('Create Admin Use Case', () => {
   const adminPersistence = new InMemoryDbAdminPersistence();

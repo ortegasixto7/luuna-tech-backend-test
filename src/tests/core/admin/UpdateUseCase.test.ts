@@ -1,11 +1,11 @@
 import { randomUUID } from 'crypto';
-import { UpdateUseCase } from '../../../../core/admin/useCases/update/UpdateUseCase';
-import { InMemoryDbAdminPersistence } from '../../../../persistence/inMemoryDb/InMemoryDbAdminPersistence';
-import { AuthServiceTest } from '../../../../external/auth/AuthServiceTest';
-import { EmailServiceTest } from '../../../../external/email/EmailServiceTest';
-import { Admin } from '../../../../core/admin/Admin';
-import { ExceptionCodeEnum } from '../../../../external/exception/ExceptionCodeEnum';
-import { Auth } from '../../../../external/auth/Auth';
+import { UpdateUseCase } from '../../../core/admin/useCases/update/UpdateUseCase';
+import { InMemoryDbAdminPersistence } from '../../../persistence/inMemoryDb/InMemoryDbAdminPersistence';
+import { AuthServiceTest } from '../../../external/auth/AuthServiceTest';
+import { EmailServiceTest } from '../../../external/email/EmailServiceTest';
+import { Admin } from '../../../core/admin/Admin';
+import { ExceptionCodeEnum } from '../../../external/exception/ExceptionCodeEnum';
+import { Auth } from '../../../external/auth/Auth';
 
 describe('Update Admin Use Case', () => {
   const adminPersistence = new InMemoryDbAdminPersistence();
