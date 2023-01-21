@@ -7,4 +7,5 @@ export interface IAdminPersistence {
   getByEmailOrNull(email: string): Promise<null | Admin>;
   getByIdOrException(id: string): Promise<Admin>;
   getAll(): Promise<Admin[]>;
+  getAllByExcludedId(id: string): Promise<Admin[]>;
 }

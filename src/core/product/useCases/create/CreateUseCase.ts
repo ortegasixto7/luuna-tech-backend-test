@@ -24,12 +24,12 @@ export class CreateUseCase implements IUseCaseCommand<CreateRequest> {
     product.price = request.price;
     product.sku = request.sku;
     await this.productPersistence.create(product);
-    let admins = await this.adminPersistence.getAll();
-    admins = admins.filter((item) => item.id !== adminLoggedIn.id);
-    const promises: Promise<void>[] = [];
+
+    const admins = await this.adminPersistence.getAllByExcludedId(adminLoggedIn.id);
+    const recipientEmails: string[] = [];
     admins.map((item) => {
-      promises.push(this.emailService.send(item.email, `Luuna Backend Test Notification`, `${adminLoggedIn.name} has created a product`));
+      recipientEmails.push(item.email);
     });
-    await Promise.allSettled(promises);
+    await this.emailService.sendToMany(recipientEmails, 'Luuna Backend Test Notification', `${adminLoggedIn.name} has created a product`);
   }
 }

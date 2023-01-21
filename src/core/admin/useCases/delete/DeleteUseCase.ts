@@ -9,7 +9,7 @@ export class DeleteUseCase implements IUseCaseCommand<DeleteRequest> {
 
   async execute(request: DeleteRequest): Promise<void> {
     const admin = await this.adminPersistence.getByIdOrException(request.id);
-    const updatedAdminName = JSON.parse(JSON.stringify(admin.name));
+    const deletedAdminName = JSON.parse(JSON.stringify(admin.name));
     await Promise.all([
       this.authService.getByIdOrException(request.id),
       this.adminPersistence.delete(request.id),
@@ -17,15 +17,16 @@ export class DeleteUseCase implements IUseCaseCommand<DeleteRequest> {
     ]);
     if (admin.id !== request.userId) {
       const adminLoggedIn = await this.adminPersistence.getByIdOrException(request.userId);
-      let admins = await this.adminPersistence.getAll();
-      admins = admins.filter((item) => item.id !== adminLoggedIn.id);
-      const promises: Promise<void>[] = [];
+      const admins = await this.adminPersistence.getAllByExcludedId(adminLoggedIn.id);
+      const recipientEmails: string[] = [];
       admins.map((item) => {
-        promises.push(
-          this.emailService.send(item.email, `Luuna Backend Test Notification`, `${adminLoggedIn.name} has deleted to Admin ${updatedAdminName}`)
-        );
+        recipientEmails.push(item.email);
       });
-      await Promise.allSettled(promises);
+      await this.emailService.sendToMany(
+        recipientEmails,
+        'Luuna Backend Test Notification',
+        `${adminLoggedIn.name} has deleted to Admin ${deletedAdminName}`
+      );
     }
   }
 }

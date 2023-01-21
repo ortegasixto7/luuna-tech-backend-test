@@ -29,12 +29,11 @@ export class SignUpUseCase implements IUseCaseCommand<SignUpRequest> {
     admin.email = auth.email;
 
     await Promise.all([this.authService.create(auth), this.adminPersistence.create(admin)]);
-    let admins = await this.adminPersistence.getAll();
-    admins = admins.filter((item) => item.id !== admin.id);
-    const promises: Promise<void>[] = [];
+    const admins = await this.adminPersistence.getAllByExcludedId(admin.id);
+    const recipientEmails: string[] = [];
     admins.map((item) => {
-      promises.push(this.emailService.send(item.email, `Luuna Backend Test Notification`, `${admin.name} has registered as Admin`));
+      recipientEmails.push(item.email);
     });
-    await Promise.allSettled(promises);
+    await this.emailService.sendToMany(recipientEmails, 'Luuna Backend Test Notification', `${admin.name} has registered as Admin`);
   }
 }

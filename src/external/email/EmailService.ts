@@ -16,6 +16,14 @@ export class EmailService implements IEmailService {
     });
   }
 
+  async sendToMany(recipients: string[], subject: string, body: string): Promise<void> {
+    const promises: Promise<void>[] = [];
+    recipients.map((item) => {
+      promises.push(this.send(item, subject, body));
+    });
+    await Promise.allSettled(promises);
+  }
+
   async send(to: string, subject: string, body: string): Promise<void> {
     try {
       await this.emailSender.sendMail({

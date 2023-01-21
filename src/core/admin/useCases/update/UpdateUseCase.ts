@@ -24,15 +24,16 @@ export class UpdateUseCase implements IUseCaseCommand<UpdateRequest> {
       await this.adminPersistence.update(admin);
       if (admin.id !== request.userId) {
         const adminLoggedIn = await this.adminPersistence.getByIdOrException(request.userId);
-        let admins = await this.adminPersistence.getAll();
-        admins = admins.filter((item) => item.id !== adminLoggedIn.id);
-        const promises: Promise<void>[] = [];
+        const admins = await this.adminPersistence.getAllByExcludedId(adminLoggedIn.id);
+        const recipientEmails: string[] = [];
         admins.map((item) => {
-          promises.push(
-            this.emailService.send(item.email, `Luuna Backend Test Notification`, `${adminLoggedIn.name} has updated to Admin ${updatedAdminName}`)
-          );
+          recipientEmails.push(item.email);
         });
-        await Promise.allSettled(promises);
+        await this.emailService.sendToMany(
+          recipientEmails,
+          'Luuna Backend Test Notification',
+          `${adminLoggedIn.name} has updated to Admin ${updatedAdminName}`
+        );
       }
     }
   }
