@@ -1,1 +1,5 @@
 .eslintrc.js
+*.test.ts
+src/persistence/inMemoryDb/*.*
+src/external/email/EmailServiceTest.ts
+src/external/auth/AuthServiceTest.ts

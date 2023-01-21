@@ -43,4 +43,9 @@ export class MongoDbAdminPersistence implements IAdminPersistence {
     });
     return result;
   }
+
+  async getAllByExcludedId(id: string): Promise<Admin[]> {
+    const result = await this.getAll();
+    return result.filter((item) => item.id !== id);
+  }
 }

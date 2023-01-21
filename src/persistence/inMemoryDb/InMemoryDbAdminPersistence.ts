@@ -8,6 +8,10 @@ export class InMemoryDbAdminPersistence implements IAdminPersistence {
   constructor() {
     this.collection = [];
   }
+  async getAllByExcludedId(id: string): Promise<Admin[]> {
+    const data = await this.getAll();
+    return data.filter((item) => item.id !== id);
+  }
 
   async getByIdOrException(id: string): Promise<Admin> {
     const result = this.collection.find((item) => item.id === id);
